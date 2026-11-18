@@ -1,0 +1,178 @@
+datasource db {
+  provider = "postgresql"
+}
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+model Subject {
+  id                   String              @id @default(cuid())
+  subjectName          String
+  branch               Branch?             @relation(fields: [branchId], references: [id])
+  branchId             String?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  teacher              Roles?              @relation(fields: [teacherId], references: [id])
+  teacherId            String?
+  Enroll               Enroll[]
+  attendances          Attendance[] // Link to daily attendance records
+  schedules            ScheduleAttendance[] @relation("ScheduleSubject")
+  TeacherSubject       TeacherSubject[]
+}
+
+model Roles {
+  id                   String              @id @default(cuid())
+  email                String              @unique
+  password             String
+  role                 RoleType
+  firstName            String
+  lastName             String?
+  phone                String?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  branch               Branch?             @relation(fields: [branchId], references: [id])
+  branchId             String?
+  Subject              Subject[]
+  TeacherSubject       TeacherSubject[]
+  schedules            ScheduleAttendance[] @relation("ScheduleTeacher")
+  Attendance           Attendance[]
+}
+
+model TeacherSubject {
+  id                   String              @id @default(cuid())
+  teacher              Roles               @relation(fields: [teacherId], references: [id])
+  teacherId            String
+  subject              Subject             @relation(fields: [subjectId], references: [id])
+  subjectId            String
+  // New relation to schedule attendance for this teacher's assignment to the subject.
+  BatchId              String?
+  Batch                Batch?              @relation(fields: [BatchId], references: [id])
+  assignedAt           DateTime            @default(now())
+  createdAt            DateTime            @default(now())
+  Enroll               Enroll[]
+  schedules            ScheduleAttendance[] @relation("ScheduleTeacherSubject")
+  branch               Branch?             @relation(fields: [branchId], references: [id])
+  branchId             String?
+}
+
+model Batch {
+  id                   String              @id @default(cuid())
+  batch                String              @unique
+  Enroll               Enroll[]
+  students             Student[]           @relation("StudentToBatch")
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  schedules            ScheduleAttendance[] @relation("ScheduleBatch")
+  Attendance           Attendance[]
+  TeacherSubject       TeacherSubject[]
+}
+
+model Branch {
+  id                   String              @id @default(cuid())
+  subjects             Subject[]
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  branchName           String              @unique
+  Roles                Roles[]
+  students             Student[]           @relation("StudentToBranch")
+  Enroll               Enroll[]
+  TeacherSubject       TeacherSubject[]
+}
+
+model Student {
+  id         String       @id @default(cuid())
+  email      String       @unique
+  Firstname  String
+  lastname   String
+  avatar     String
+  password   String
+  rollNumber String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  role       RoleType
+  phone      String?
+  branch     Branch       @relation(fields: [branchId], references: [id], name: "StudentToBranch")
+  branchId   String
+  batch      Batch        @relation(fields: [batchId], references: [id], name: "StudentToBatch")
+  batchId    String
+  Enroll     Enroll[]
+  Attendance Attendance[]
+  // 128-number face embedding computed in the browser (face-api). Empty = not enrolled.
+  faceDescriptor Float[]
+
+  @@index([rollNumber])
+  @@index([phone])
+}
+
+model Enroll {
+  id               String          @id @default(cuid())
+  student          Student         @relation(fields: [studentId], references: [id])
+  studentId        String
+  subject          Subject         @relation(fields: [subjectId], references: [id])
+  subjectId        String
+  batch            Batch           @relation(fields: [batchId], references: [id])
+  batchId          String
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  session          String
+  year             String
+  teacherSubject   TeacherSubject? @relation(fields: [teacherSubjectId], references: [id])
+  teacherSubjectId String?
+  branch           Branch?         @relation(fields: [branchId], references: [id])
+  branchId         String?
+
+  @@index([session])
+  @@index([year])
+}
+
+model ScheduleAttendance {
+  id             String           @id @default(cuid())
+  startTime      DateTime?
+  endTime        DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  Attendance     Attendance[]
+  teacher        Roles          @relation("ScheduleTeacher", fields: [teacherId], references: [id])
+  batch          Batch          @relation("ScheduleBatch", fields: [batchId], references: [id])
+  subject        Subject        @relation("ScheduleSubject", fields: [subjectId], references: [id])
+  teacherSubject TeacherSubject @relation("ScheduleTeacherSubject", fields: [teacherSubjectId], references: [id])
+
+  teacherId        String
+  batchId          String
+  subjectId        String
+  teacherSubjectId String
+
+  @@index([teacherId, batchId, subjectId, startTime]) // Index for fast lookup
+}
+
+model Attendance {
+  id                 String              @id @default(cuid())
+  student            Student             @relation(fields: [studentId], references: [id])
+  studentId          String
+  subject            Subject             @relation(fields: [subjectId], references: [id])
+  subjectId          String
+  scheduleAttendance ScheduleAttendance? @relation(fields: [scheduleId], references: [id])
+  scheduleId         String?
+  status             AttendanceValue
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  batch              Batch?              @relation(fields: [batchId], references: [id])
+  batchId            String?
+  teacher            Roles?              @relation(fields: [teacherId], references: [id])
+  teacherId          String?
+}
+
+enum RoleType {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum AttendanceValue {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+  NOT_MARKED
+}
