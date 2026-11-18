@@ -1,3 +1,5 @@
+'use client'
+
 import { z } from 'zod'
 import { format } from 'date-fns'
 import { useForm } from 'react-hook-form'
