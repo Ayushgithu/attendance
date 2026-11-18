@@ -269,12 +269,15 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
                                         ⚙️ Settings
                                     </MenuItem>
                                     <div className="my-1 h-px bg-slate-900/10" />
-                                    <MenuItem onClick={async () => {
-                                        // End the session first, then hard-navigate to the landing page
-                                        // (works for cross-origin URLs too). Falls back to /login if unset.
-                                        await signOut({ redirect: false });
-                                        window.location.href = process.env.NEXT_PUBLIC_LANDING_URL || "/login";
-                                    }} danger>
+                                    <MenuItem
+                                        onClick={() =>
+                                            signOut({
+                                                callbackUrl:
+                                                    process.env.NEXT_PUBLIC_LANDING_URL || "/login",
+                                            })
+                                        }
+                                        danger
+                                    >
                                         ↩ Logout
                                     </MenuItem>
                                 </div>
