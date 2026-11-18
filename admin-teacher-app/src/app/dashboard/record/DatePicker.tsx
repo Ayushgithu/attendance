@@ -28,7 +28,7 @@ export default function DatePickerDemo() {
 
     }
     
-  },[date]);
+  }, [date, route, router]);
 
 
   return (

@@ -17,7 +17,7 @@ type RoleItem = {
 const TONES = ["primary", "info", "purple", "success", "warning"] as const;
 
 export function Role({ data, action }: { data: any; action?: ReactNode }) {
-    const users: RoleItem[] = data?.getUser ?? [];
+    const users = useMemo<RoleItem[]>(() => data?.getUser ?? [], [data]);
     const [q, setQ] = useState("");
 
     const shown = useMemo(() => {

@@ -103,7 +103,7 @@ export function SubjectForm({ data }: { data: any }) {
                 });
             }
         },
-        [session, form]
+        [session, form, router]
     );
     // Destructure API data for easier access
     if (status === "loading") return <div>Loading...</div>;

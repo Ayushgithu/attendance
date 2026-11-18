@@ -24,7 +24,7 @@ export function Calendars({ id }: { id: string }) {
         } else {
             route.push(`${router}`);
         }
-    }, [formattedDate]);
+    }, [formattedDate, route, router]);
 
     return (
         <Card>

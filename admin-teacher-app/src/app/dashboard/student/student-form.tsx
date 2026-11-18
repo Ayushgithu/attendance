@@ -103,7 +103,7 @@ export function StudentForm() {
                 });
             }
         },
-        [session]
+        [session, form]
     );
 
     return (

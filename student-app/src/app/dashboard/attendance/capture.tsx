@@ -5,6 +5,7 @@ import { User2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getDescriptor, loadFaceApi } from "@/lib/face-client";
 import { useLiveness } from "@/hooks/use-liveness";
@@ -177,9 +178,12 @@ export default function CameraCapture({ attendanceData }: any) {
                             <h3 className="text-lg font-semibold">
                                 Captured Image:
                             </h3>
-                            <img
+                            <Image
                                 src={capturedImage}
                                 alt="Captured"
+                                width={320}
+                                height={240}
+                                unoptimized
                                 className="w-80 h-60 border rounded-lg "
                             />
                             {matchResult && (
