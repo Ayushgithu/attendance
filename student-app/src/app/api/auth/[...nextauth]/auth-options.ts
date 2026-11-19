@@ -102,7 +102,7 @@ export const authOptions: NextAuthOptions = {
 
     pages: {
         signIn: "/login",
-        signOut: "/",
+        signOut: process.env.NEXT_LANDING_PAGE_URL,
     },
     session: {
         strategy: "jwt",
