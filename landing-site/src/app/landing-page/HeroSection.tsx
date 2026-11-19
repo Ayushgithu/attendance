@@ -26,15 +26,17 @@ export default function HeroSection() {
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
               href={STUDENT_LOGIN}
-              className="rounded-md px-6 py-3 text-base font-semibold text-white shadow-[0_6px_16px_rgb(var(--brand-rgb)/0.35)] transition hover:brightness-110"
+              className="inline-flex items-center gap-2 rounded-md px-6 py-3 text-base font-semibold text-white shadow-[0_6px_16px_rgb(var(--brand-rgb)/0.35)] transition hover:brightness-110"
               style={{ background: "var(--brand)" }}
             >
+              <LineIcon name="user" size={20} className="text-white" />
               Student sign in
             </a>
             <a
               href={ADMIN_LOGIN}
-              className="rounded-md border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-900/80 transition hover:bg-slate-50"
+              className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-900/80 transition hover:bg-slate-50"
             >
+              <LineIcon name="gear" size={20} className="text-current" />
               Admin / Teacher sign in
             </a>
           </div>

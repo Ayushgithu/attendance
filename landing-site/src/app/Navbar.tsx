@@ -40,17 +40,20 @@ export default function Navbar() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <a href={ADMIN_LOGIN} className="hidden rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 sm:inline-block">
+          <a href={ADMIN_LOGIN} className="hidden rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 sm:inline-flex sm:items-center sm:gap-1.5">
+            <LineIcon name="gear" size={16} className="text-current" />
             Admin / Teacher
           </a>
-          <a href={STUDENT_LOGIN} className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+          <a href={STUDENT_LOGIN} className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+            <LineIcon name="user" size={16} className="text-current" />
             Student sign in
           </a>
           <a
             href={STUDENT_REGISTER}
-            className="rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
+            className="inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
             style={{ background: "var(--brand)" }}
           >
+            <LineIcon name="ok" size={16} className="text-white" />
             Register
           </a>
         </div>
